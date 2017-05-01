@@ -15,13 +15,12 @@
     "express": "~4.14.1",
     "jsonfile": "^2.4.0",
     "moment": "^2.18.1",
+    "moment-round": "^1.0.1",
     "morgan": "~1.7.0",
-    "mysql": "^2.13.0",
     "promise": "^7.1.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",
     "serve-favicon": "~2.3.2",
-    "sqlite": "^2.5.0",
-    "sqlite3": "^3.1.8"
+    "string-hash": "^1.1.3"
   }
 }
