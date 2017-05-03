@@ -62,6 +62,15 @@ function orderRooms(buildingCode, time){
 			}
 
 			Promise.all(augmentSchedPromises).then(function () {
+				rooms.sort(function(a, b){
+					if(a.waitTime < b.waitTime || a.waitTime == b.waitTime && a.freeTime > b.freeTime){
+						return -1;
+					}else if(a.waitTime > b.waitTime || a.waitTime == b.waitTime && a.freeTime < b.freeTime){
+						return 1;
+					}else{
+						return 0;
+					}
+				});
 				resolve(rooms);
 			});
 
@@ -70,17 +79,6 @@ function orderRooms(buildingCode, time){
 
 	return promise;
 }
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-
-	orderRooms("BA", moment()).then(function(v){
-	  	res.json(v);
-	}).catch(function(err){
-		res.json("error");
-		console.log(err);
-	});
-});
 
 router.get('/buildings', function(req, res, next) {
 	scraper.getBuildingCodes().then(function(v){
@@ -100,7 +98,7 @@ router.get('/buildings/:code/rooms', function(req, res, next) {
 	});
 });
 router.get('/optimize', function(req, res, next) {
-	orderRooms(req.query.code, moment()).then(function(v){
+	orderRooms(req.query.code, moment().then(function(v){
 	  	res.json(v);
 	}).catch(function(err){
 		res.json("error");
