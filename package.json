@@ -17,6 +17,7 @@
     "moment": "^2.18.1",
     "moment-round": "^1.0.1",
     "morgan": "~1.7.0",
+    "node-cache": "^4.1.1",
     "promise": "^7.1.1",
     "request": "^2.81.0",
     "request-promise": "^4.2.0",

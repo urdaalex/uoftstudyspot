@@ -4,7 +4,7 @@ var Promise = require('promise');
 var express = require('express');
 var moment = require('moment');
 require('moment-round');
-var scraper = require('./ace-scraper.js');
+var ace = require('./ace-api.js');
 
 var router = express.Router();
 
@@ -12,13 +12,14 @@ function orderRooms(buildingCode, time){
 	time = time.round(1, 'hours');
 
 	let promise = new Promise(function(resolve, reject){
-		scraper.getRooms(buildingCode).then(function(rooms){
+		ace.getRooms(buildingCode).then(function(rooms){
 			
 			//populate free time length, and wait time length for each room at the current time
+			console.log(rooms);
 			let augmentSchedPromises = [];
 			for(let i=0; i<rooms.length; i++){
 				augmentSchedPromises.push(
-					scraper.getDaySchedule(buildingCode, rooms[i].id, time).then(function(sched){
+					ace.getDaySchedule(buildingCode, rooms[i].id, time).then(function(sched){
 						let hoursSched = sched.map(function(elem){
 							return elem.time.get('hour');
 						});
@@ -81,7 +82,7 @@ function orderRooms(buildingCode, time){
 }
 
 router.get('/buildings', function(req, res, next) {
-	scraper.getBuildingCodes().then(function(v){
+	ace.getBuildingCodes().then(function(v){
 	  	res.json(v);
 	}).catch(function(err){
 		res.json("error");
@@ -90,15 +91,7 @@ router.get('/buildings', function(req, res, next) {
 });
 
 router.get('/buildings/:code/rooms', function(req, res, next) {
-	scraper.getRooms(req.params.code).then(function(v){
-	  	res.json(v);
-	}).catch(function(err){
-		res.json("error");
-		console.log(err);
-	});
-});
-router.get('/optimize', function(req, res, next) {
-	orderRooms(req.query.code, moment().then(function(v){
+	ace.getRooms(req.params.code).then(function(v){
 	  	res.json(v);
 	}).catch(function(err){
 		res.json("error");
@@ -106,5 +99,14 @@ router.get('/optimize', function(req, res, next) {
 	});
 });
 
+router.get('/optimize', function(req, res, next) {
+	orderRooms(req.query.code, moment()).then(function(v){
+	  	res.json(v);
+	}).catch(function(err){
+		res.json("error");
+		console.log(err);
+	});
+});
+ 
 
 module.exports = router;

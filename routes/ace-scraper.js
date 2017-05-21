@@ -4,7 +4,7 @@ var Promise = require('promise');
 var cheerio = require('cheerio');
 var moment = require('moment');
 require('moment-round');
-var request = require('./request-cached-wrapper.js');
+var request = require('request-promise');
 var buildings = require('./buildings.js');
 
 
@@ -114,7 +114,7 @@ module.exports={
 		});
 
 		return promise;
-	},
+	}/*,
 
 	getDaySchedule: function (buildingCode, roomNumber, day){
 		let context = this;
@@ -128,6 +128,6 @@ module.exports={
 			});
 		});
 
-	}
+	}*/
 
 };
