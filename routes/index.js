@@ -15,7 +15,6 @@ function orderRooms(buildingCode, time){
 		ace.getRooms(buildingCode).then(function(rooms){
 			
 			//populate free time length, and wait time length for each room at the current time
-			console.log(rooms);
 			let augmentSchedPromises = [];
 			for(let i=0; i<rooms.length; i++){
 				augmentSchedPromises.push(
