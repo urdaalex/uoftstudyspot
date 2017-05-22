@@ -101,7 +101,7 @@ router.get('/buildings/:code/rooms', function(req, res, next) {
 router.get('/optimize', function(req, res, next) {
 	let time = undefined; 
 	if(req.query.time != undefined){
-		time = moment(req.query.time, "YYYY-MM-DD HH")
+		time = moment(req.query.time, "YYYY-MM-DD::HH")
 	}else{
 		time = moment();
 	}

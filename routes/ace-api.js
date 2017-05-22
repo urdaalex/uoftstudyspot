@@ -48,6 +48,7 @@ module.exports={
 	},
 
 	getRooms: function (buildingCode){
+		buildingCode = buildingCode.toUpperCase();
 
 		let promise = new Promise(function(resolve, reject){
 			let cacheKey = buildingCode + "ROOMS";
@@ -71,6 +72,8 @@ module.exports={
 	},
 
 	getDaySchedule: function (buildingCode, roomNumber, day){
+		buildingCode = buildingCode.toUpperCase();
+		roomNumber = roomNumber.toUpperCase();
 		
 		let dayKey = day.clone().startOf('isoWeek').format("YYYYMMDD");
 		let cacheKey = buildingCode + roomNumber + dayKey;
