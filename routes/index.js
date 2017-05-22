@@ -99,6 +99,7 @@ router.get('/buildings/:code/rooms', function(req, res, next) {
 });
 
 router.get('/optimize', function(req, res, next) {
+	console.log(moment());
 	orderRooms(req.query.code, moment()).then(function(v){
 	  	res.json(v);
 	}).catch(function(err){
