@@ -99,8 +99,13 @@ router.get('/buildings/:code/rooms', function(req, res, next) {
 });
 
 router.get('/optimize', function(req, res, next) {
-	console.log(moment());
-	orderRooms(req.query.code, moment()).then(function(v){
+	let time = undefined; 
+	if(req.query.time != undefined){
+		time = moment(req.query.time, "YYYY-MM-DD HH")
+	}else{
+		time = moment();
+	}
+	orderRooms(req.query.code, time).then(function(v){
 	  	res.json(v);
 	}).catch(function(err){
 		res.json("error");

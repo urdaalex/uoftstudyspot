@@ -81,13 +81,11 @@ module.exports={
 			
 			//cache hit
 			if (sched != undefined){
-				console.log("hit on "+cacheKey);
+
 				//deserialize the time
 				for(let i=0; i<sched.length; i++){
 					sched[i].time = moment(sched[i].time);
 				}
-
-				console.log(sched);
 
 				resolve(sched.filter(function(elem){
 					return elem.time.isSame(day, 'day');
@@ -95,8 +93,6 @@ module.exports={
 
 			//cache miss, use scraper and cache the result
 			}else{
-				console.log("miss on "+cacheKey);
-
 				aceScraper.getWeekSchedule(buildingCode, roomNumber, day).then(function(sched){
 					
 					//serialize the time
@@ -111,8 +107,6 @@ module.exports={
 					for(let i=0; i<sched.length; i++){
 						sched[i].time = moment(sched[i].time);
 					}
-
-					console.log(sched);
 
 					resolve(sched.filter(function(elem){
 						return elem.time.isSame(day, 'day');
