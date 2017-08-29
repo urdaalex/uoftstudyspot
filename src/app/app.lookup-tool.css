@@ -1,0 +1,40 @@
+﻿:host {
+  display: inline-block;
+  width:100%;
+}
+
+form{
+  width:100%;
+  text-align:center;
+}
+
+.schedules{
+  margin:20px auto;
+}
+
+.info-text {
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+th {
+  text-align: left;
+}
+
+md-spinner{
+  width:25px;
+  height:25px;
+}
+
+md-select{
+  margin-bottom:15px;
+}
+
+.spinner{
+  display:inline-block;
+  margin-top: 20px;
+}
+
+.building-container {
+  margin-bottom:15px;
+}

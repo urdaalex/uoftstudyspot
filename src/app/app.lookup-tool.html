@@ -1,0 +1,65 @@
+﻿<form [formGroup]="scheduleForm" novalidate>
+
+  <div class="info-text" style="">
+    Find a free study room...
+  </div>
+
+  <md-select placeholder="Select a Building" formControlName="building" floatPlaceholder="never" style="width:100%">
+    <md-option *ngFor="let building of buildings" [value]="building.id">{{building.id + " - " + building.name | truncate:35}}</md-option>
+  </md-select>
+
+  <div style="display:inline-block">
+    <md-select placeholder="Time" formControlName="time" floatPlaceholder="never">
+      <md-option *ngFor="let hour of hours" [value]="hour">
+        {{(hour%12||12)}}:00 {{hour<12?'AM':'PM'}}
+      </md-option>
+    </md-select>
+  </div>
+
+  <div style="display:inline-block">
+    <md-select placeholder="Date" formControlName="date" floatPlaceholder="never">
+      <md-option *ngFor="let date of dates; let i = index" [value]="i">
+        {{date}}
+      </md-option>
+    </md-select>
+  </div>
+
+  <div style="display:inline-block; min-width:150px;">
+    <md-slide-toggle color="accent" formControlName="showAllRooms">
+      Show All Rooms
+    </md-slide-toggle>
+  </div>
+  <div *ngIf="loading | async" class="spinner">
+    <md-spinner mode="indeterminate"></md-spinner>
+  </div>
+
+  <div class="schedules" *ngIf="!scheduleForm.value.showAllRooms && selectedBuildingSchedule && (selectedBuildingSchedule[0].freeFrom != scheduleForm.value.time)">
+    <div>No rooms found for your specified time :(</div>
+    <div><button type="button" md-button (click)="scheduleForm.controls.showAllRooms.setValue(true)">Show All Rooms</button></div>
+  </div>
+</form>
+
+<ng-container *ngIf="!(!scheduleForm.value.showAllRooms && selectedBuildingSchedule && (selectedBuildingSchedule[0].freeFrom != scheduleForm.value.time))">
+  <table class="schedules" *ngIf="selectedBuildingSchedule">
+    <thead>
+      <tr>
+        <th style="width:100px;">Room</th>
+        <th *ngIf="scheduleForm.value.showAllRooms" style="width:85px;">Free From</th>
+        <th>Free Until</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sched of selectedBuildingSchedule">
+        <ng-container *ngIf="scheduleForm.value.showAllRooms || sched.freeFrom == scheduleForm.value.time">
+          <td>
+            <div [mdTooltip]="sched.name" mdTooltipPosition="below">
+              <span>{{sched.id}}</span>
+            </div>
+          </td>
+          <td *ngIf="scheduleForm.value.showAllRooms">{{sched.freeFrom | twelveHours}}</td>
+          <td>{{sched.freeUntil | twelveHours}}</td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</ng-container>
