@@ -36,6 +36,7 @@
     "moment-round": "^1.0.1",
     "node-cache": "^4.1.1",
     "promise": "^8.0.1",
+    "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "rxjs": "^5.4.1",
     "webpack": "~2.4.0",
