@@ -6,7 +6,8 @@
     "ng": "ng",
     "start": "node ./server/server.js",
     "dev": "webpack-dev-server --port=4200",
-    "heroku-postbuild": "webpack -p --config webpack.config.prod.js",
+    "heroku-prebuild": "npm install --only=dev",
+    "heroku-postbuild": "webpack -p --config webpack.config.prod.js --progress",
     "test": "karma start ./karma.conf.js",
     "lint": "ng lint",
     "e2e": "protractor ./protractor.conf.js",
@@ -39,7 +40,6 @@
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
     "rxjs": "^5.4.1",
-    "webpack": "~2.4.0",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
