@@ -36,11 +36,11 @@ const postcssPlugins = function () {
                     if (!URL.startsWith('/') || URL.startsWith('//')) {
                         return URL;
                     }
-                    if (false) {
+                    if (deployUrl.match(/:\/\//)) {
                         // If deployUrl contains a scheme, ignore baseHref use deployUrl as is.
                         return `${deployUrl.replace(/\/$/, '')}${URL}`;
                     }
-                    else if (false) {
+                    else if (baseHref.match(/:\/\//)) {
                         // If baseHref contains a scheme, include it as is.
                         return baseHref.replace(/\/$/, '') +
                             `/${deployUrl}/${URL}`.replace(/\/\/+/g, '/');
@@ -430,7 +430,7 @@ module.exports = {
     new ExtractTextPlugin({
       "filename": "[name].[contenthash:20].bundle.css"
     }),
-    new SuppressExtractedTextChunksWebpackPlugin(),
+    //new SuppressExtractedTextChunksWebpackPlugin(),
     new EnvironmentPlugin({
       "NODE_ENV": "production"
     }),
