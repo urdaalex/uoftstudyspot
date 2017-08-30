@@ -10,7 +10,7 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/finally';
 
-import * as moment from 'moment/moment';
+import moment from 'moment/src/moment';
 
 @Component({
     selector: 'lookup-tool',
