@@ -17,7 +17,7 @@ const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
 const genDirNodeModules = path.join(process.cwd(), 'src', '$$_gendir', 'node_modules');
 const entryPoints = ["inline","polyfills","sw-register","styles","vendor","main"];
-const minimizeCss = false;
+const minimizeCss = true;
 const baseHref = "";
 const deployUrl = "";
 const postcssPlugins = function () {
@@ -36,11 +36,11 @@ const postcssPlugins = function () {
                     if (!URL.startsWith('/') || URL.startsWith('//')) {
                         return URL;
                     }
-                    if (deployUrl.match(/:\/\//)) {
+                    if (false) {
                         // If deployUrl contains a scheme, ignore baseHref use deployUrl as is.
                         return `${deployUrl.replace(/\/$/, '')}${URL}`;
                     }
-                    else if (baseHref.match(/:\/\//)) {
+                    else if (false) {
                         // If baseHref contains a scheme, include it as is.
                         return baseHref.replace(/\/$/, '') +
                             `/${deployUrl}/${URL}`.replace(/\/\/+/g, '/');
