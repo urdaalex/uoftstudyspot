@@ -14,7 +14,7 @@ export class AceService {
 
     getBuildings(): Observable<Building[]> {
         return this.http
-            .get(`http://uoftroomfinder.com/api/buildings`)
+            .get(`http://uoftstudyspot.com/api/buildings`)
             .map(response => response.json() as Building[]);
     }
 
@@ -27,7 +27,7 @@ export class AceService {
         }
 
         return this.http
-            .get(`http://uoftroomfinder/api/optimize`, { params: params })
+            .get(`http://uoftstudyspot/api/optimize`, { params: params })
             .map(response => response.json() as OptimizeResult[]);
     }
 }
