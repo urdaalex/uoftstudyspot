@@ -27,7 +27,7 @@ export class AceService {
         }
 
         return this.http
-            .get(`http://uoftstudyspot/api/optimize`, { params: params })
+            .get(`http://uoftstudyspot.com/api/optimize`, { params: params })
             .map(response => response.json() as OptimizeResult[]);
     }
 }
