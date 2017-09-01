@@ -5,14 +5,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { LookupToolComponent } from './app.lookup-tool.component'
-import { AceService } from './app.ace.service'
-import { TwelveHoursPipe } from './app.twelve-hours.pipe'
-import { TruncatePipe} from './app.truncate.pipe'
+import { LookupToolComponent } from './app.lookup-tool.component';
+import { AboutComponent} from './app.about.component';
+import { AceService } from './app.ace.service';
+import { TwelveHoursPipe } from './app.twelve-hours.pipe';
+import { TruncatePipe } from './app.truncate.pipe';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MdSelectModule, MdProgressSpinnerModule, MdToolbarModule, MdTooltipModule, MdButtonModule, MdSlideToggleModule } from '@angular/material'
-import { AngularFontAwesomeModule} from 'angular-font-awesome/angular-font-awesome'
 
 @NgModule({
     imports: [
@@ -21,7 +21,6 @@ import { AngularFontAwesomeModule} from 'angular-font-awesome/angular-font-aweso
         HttpModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
-        AngularFontAwesomeModule,
         MdSelectModule,
         MdProgressSpinnerModule,
         MdToolbarModule,
@@ -32,6 +31,7 @@ import { AngularFontAwesomeModule} from 'angular-font-awesome/angular-font-aweso
     declarations: [
         AppComponent,
         LookupToolComponent,
+        AboutComponent,
         TwelveHoursPipe,
         TruncatePipe
     ],

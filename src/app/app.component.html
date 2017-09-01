@@ -1,7 +1,16 @@
 ﻿<!--The content below is only a placeholder and can be replaced.-->
 <header>
-  <md-toolbar color="primary">
-    <span>U of T Study Spot</span>
+  <md-toolbar color="primary" style="position:relative;">
+    <a routerLink="/" style="text-decoration:inherit;color:inherit;">U of T Study Spot</a>
+    <div style="flex-grow:1;"></div>
+    <div>
+      <a md-icon-button mdTooltip="Info" routerLink="/about">
+        <i class="fa  fa-question-circle-o" aria-hidden="true" style="font-size:25px;"></i>
+      </a>
+    </div>
+    <div>
+      <a md-button color="basic" href="https://github.com/urdaalex/uoftstudyspot"><i class="fa fa-github" aria-hidden="true" style="font-size:25px; margin:0 7px 2px 0;"></i>GITHUB</a>
+    </div>
   </md-toolbar>
 </header>
 

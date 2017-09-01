@@ -114,20 +114,5 @@ module.exports={
 		});
 
 		return promise;
-	}/*,
-
-	getDaySchedule: function (buildingCode, roomNumber, day){
-		let context = this;
-		return new Promise(function(resolve, reject){
-			context.getWeekSchedule(buildingCode, roomNumber, day).then(function(sched){
-				resolve(sched.filter(function(elem){
-					return elem.time.isSame(day,'day');
-				}));
-			}).catch(function(err){
-				reject(err);
-			});
-		});
-
-	}*/
-
+	}
 };
