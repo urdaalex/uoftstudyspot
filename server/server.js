@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var http = require("http");
 
 var api = require('./api');
 
@@ -41,5 +42,12 @@ var server = app.listen(process.env.PORT || 4200, function () {
 var port = server.address().port;
 console.log("App now running on port", port);
 });
+
+//prevent heroku host from putting app to sleep
+if(process.env.NODE_ENV == 'production'){
+  setInterval(function() {
+    http.get("http://uoftstudyspot.com/api/ping");
+}, 300000) //every 5 mins
+}
 
 module.exports = app;

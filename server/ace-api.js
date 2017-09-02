@@ -5,7 +5,7 @@ var moment = require('moment');
 require('moment-round');
 var aceScraper = require('./ace-scraper.js');
 const NodeCache = require( "node-cache" );
-const aceCache = new NodeCache( { stdTTL: 7200, checkperiod: 3600 } );
+const aceCache = new NodeCache( { stdTTL: 18000, checkperiod: 3600 } ); /*cache entry expires every 5hrs*/
 
 if (!String.prototype.format) {
   String.prototype.format = function() {
