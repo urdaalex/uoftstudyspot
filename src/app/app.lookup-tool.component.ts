@@ -19,7 +19,7 @@ import moment from 'moment/src/moment';
 })
 export class LookupToolComponent implements OnInit {
     hours: number[] = Array.from(new Array(24), (x, i) => i);
-    dates: string[] = Array.from(new Array(5), (x, i) => moment().add(i, 'days').format('ddd, MMM DD'));
+    dates: string[] = Array.from(new Array(7), (x, i) => moment().add(i, 'days').format('ddd, MMM DD'));
     buildings: Building[];
     selectedBuildingSchedule: OptimizeResult[];
     loading: Subject<boolean>;
