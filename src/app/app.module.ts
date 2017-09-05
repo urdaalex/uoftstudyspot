@@ -14,6 +14,8 @@ import { TruncatePipe } from './app.truncate.pipe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MdSelectModule, MdProgressSpinnerModule, MdToolbarModule, MdTooltipModule, MdButtonModule, MdSlideToggleModule } from '@angular/material'
 
+import { Angulartics2Module, Angulartics2GoogleAnalytics } from 'angulartics2';
+
 @NgModule({
     imports: [
         BrowserModule,
@@ -26,7 +28,8 @@ import { MdSelectModule, MdProgressSpinnerModule, MdToolbarModule, MdTooltipModu
         MdToolbarModule,
         MdTooltipModule,
         MdButtonModule,
-        MdSlideToggleModule
+        MdSlideToggleModule,
+        Angulartics2Module.forRoot([Angulartics2GoogleAnalytics])
     ],
     declarations: [
         AppComponent,
