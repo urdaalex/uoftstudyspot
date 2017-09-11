@@ -5,6 +5,7 @@ import { OptimizeResult } from './app.optimize-result';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Angulartics2 } from 'angulartics2';
 
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/catch';
@@ -28,7 +29,8 @@ export class LookupToolComponent implements OnInit {
 
     constructor(
         private aceService: AceService,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private angulartics2: Angulartics2
     ) 
     {
         this.createForm();
@@ -49,6 +51,7 @@ export class LookupToolComponent implements OnInit {
             const formModel = this.scheduleForm.value;
             this.loading.next(true);
             this.selectedBuildingSchedule = null;
+            this.angulartics2.eventTrack.next({ action: 'search', properties: { category: 'lookup-tool', label: formModel.building} });
             this.aceService.getOptimizedRooms(formModel.building, moment().add(formModel.date, 'days').hours(formModel.time).format('YYYY-MM-DD::HH'))
                 .do(() => this.loading.next(false))
                 .finally(() => this.loading.next(false))
