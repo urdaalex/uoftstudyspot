@@ -1,4 +1,5 @@
 var express = require('express');
+var compression = require('compression');
 var bodyParser = require('body-parser');
 var http = require("http");
 
@@ -7,7 +8,7 @@ var api = require('./api');
 var app = express();
 
 app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
+app.use(compression());
 
 // Create link to Angular build directory
 var distDir = __dirname + "/../dist/";
