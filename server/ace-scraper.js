@@ -28,7 +28,7 @@ module.exports={
 	getBuildingCodes: function (){
 		const options = {  
 		  method: 'GET',
-		  uri: "http://www.osm.utoronto.ca/bookings/f?p=200:3:1742256958421901::::P3_BLDG,P3_ROOM:,",
+		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:3:1742256958421901::::P3_BLDG,P3_ROOM:,",
 		  json: false,
 		  jar: true
 		};
@@ -57,7 +57,7 @@ module.exports={
 	getRooms: function (buildingCode){
 		const options = {  
 		  method: 'GET',
-		  uri: "http://www.osm.utoronto.ca/bookings/f?p=200:3:1742256958421901::::P3_BLDG,P3_ROOM:{0},".format(buildingCode),
+		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:3:1742256958421901::::P3_BLDG,P3_ROOM:{0},".format(buildingCode),
 		  json: false,
 		  jar: true
 		};
@@ -85,7 +85,7 @@ module.exports={
 	getWeekSchedule: function (buildingCode, roomNumber, dayOfWeek){
 		const options = {  
 		  method: 'GET',
-		  uri: "http://www.osm.utoronto.ca/bookings/f?p=200:5:420255677273101::::P5_BLDG,P5_ROOM,P5_CALENDAR_DATE:{0},{1},{2}"
+		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:5:420255677273101::::P5_BLDG,P5_ROOM,P5_CALENDAR_DATE:{0},{1},{2}"
 		  	.format(buildingCode, roomNumber, dayOfWeek.clone().startOf('isoWeek').format("YYYYMMDD")), //use the same day for every day in the week, for caching purposes
 		  json: false,
 		  jar: true
