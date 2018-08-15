@@ -20,10 +20,6 @@ if (!String.prototype.format) {
   };
 }
 
-function dateify(dateString){
-	return moment(dateString, "YYYYMMDDHHmmss")
-}
-
 module.exports={
 	getBuildingCodes: function (){
 		const options = {  
@@ -83,10 +79,12 @@ module.exports={
 	},
 
 	getWeekSchedule: function (buildingCode, roomNumber, dayOfWeek){
+		let startDate = dayOfWeek.clone().startOf('isoWeek'); //use the same day for every day in the week, for caching purposes
+
 		const options = {  
 		  method: 'GET',
-		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:5:::::P5_BLDG,P5_ROOM,P5_CALENDAR_DATE:{0},{1},{2}"
-		  	.format(buildingCode, roomNumber, dayOfWeek.clone().startOf('isoWeek').format("YYYYMMDD")), //use the same day for every day in the week, for caching purposes
+		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:5:::::P5_BLDG,P5_ROOM,P5_CALENDAR_DATE:{0},{1},{2}" 
+		  	.format(buildingCode, roomNumber, startDate.format("YYYYMMDD")), 
 		  json: false,
 		  jar: true
 		};
@@ -96,15 +94,30 @@ module.exports={
 		let promise = new Promise(function(resolve, reject){
 			request(options).then(function(response){
 				let $ = cheerio.load(response);
-				
-				//go over every event
-				$(".apex_cal_data_grid_src").each(function(i, elem){
-					sched.push({buildingCode: buildingCode,
-						roomNumber: roomNumber,
-						time: dateify($(this).prev().val()),
-						name: $(this).text().trim(),
 
-					});
+				let currentDateTime=startDate.hours(7); //schedule starts at 7 am every day
+				
+				//loop over every hour
+				$("table.t3SmallWeekCalendar>tbody>tr").each(function(i, elem){
+					if(i>1){ //skip first row
+
+						//loop over every day
+						$("td", this).each(function(i, elem){
+
+							if($(this).text().trim() != ""){
+								sched.push({buildingCode: buildingCode,
+									roomNumber: roomNumber,
+									time: currentDateTime.clone(),
+									name: $(this).text().trim(),
+								});
+							}
+							currentDateTime.add(1, "day");
+
+						});
+
+						currentDateTime.add(1, "hour"); 
+						currentDateTime.subtract(7, "days"); 
+					}
 				});
 
 				resolve(sched);
