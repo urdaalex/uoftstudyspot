@@ -2,6 +2,7 @@ var express = require('express');
 var compression = require('compression');
 var bodyParser = require('body-parser');
 var http = require("http");
+var moment = require("moment");
 
 var api = require('./api');
 
@@ -44,11 +45,14 @@ var port = server.address().port;
 console.log("App now running on port", port);
 });
 
-//prevent heroku host from putting app to sleep
-if(process.env.NODE_ENV == 'production'){
-  setInterval(function() {
+if(process.env.NODE_ENV === 'production'){
+  setInterval(function () {
     http.get("http://uoftstudyspot.com/api/ping");
-}, 300000) //every 5 mins
+  }, 300000); //every 5 mins, to prevent heroku host from putting app to sleep
+
+  setInterval(function () {
+    http.get("http://uoftstudyspot.com/api/optimize?code=DH&time=" + moment().toString("YYYY-MM-DD::HH") + "&campus=UTM");
+  }, 3600000); //every 60 mins, to rehydrate UTM cache since it takes very long to load on cache-miss
 }
 
 module.exports = app;

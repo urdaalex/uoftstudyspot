@@ -1,8 +1,17 @@
-﻿<form [formGroup]="scheduleForm" novalidate>
+<form [formGroup]="scheduleForm" novalidate>
 
   <div class="info-text" style="">
     Find a free study room...
   </div>
+
+  <md-radio-group formControlName="selectedCampus" floatPlaceholder="never" style="width:100%">
+    <md-radio-button value="UTSG">
+      St. George
+    </md-radio-button>
+    <md-radio-button value="UTM">
+      UTM
+    </md-radio-button>
+  </md-radio-group>
 
   <md-select placeholder="Select a Building" formControlName="building" floatPlaceholder="never" style="width:100%">
     <md-option *ngFor="let building of buildings" [value]="building.id">{{building.id + " - " + building.name | truncate:35}}</md-option>
