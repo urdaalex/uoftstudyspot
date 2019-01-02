@@ -51,7 +51,7 @@ if(process.env.NODE_ENV === 'production'){
   }, 300000); //every 5 mins, to prevent heroku host from putting app to sleep
 
   setInterval(function () {
-    http.get("http://uoftstudyspot.com/api/optimize?code=DH&time=" + moment().toString("YYYY-MM-DD::HH") + "&campus=UTM");
+    http.get("http://uoftstudyspot.com/api/optimize?code=DH&time=" + moment().format("YYYY-MM-DD::HH") + "&campus=UTM");
   }, 3600000); //every 60 mins, to rehydrate UTM cache since it takes very long to load on cache-miss
 }
 
