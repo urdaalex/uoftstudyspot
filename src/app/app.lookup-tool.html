@@ -42,13 +42,13 @@
     <md-spinner mode="indeterminate"></md-spinner>
   </div>
 
-  <div class="schedules" *ngIf="!scheduleForm.value.showAllRooms && selectedBuildingSchedule && (selectedBuildingSchedule[0].freeFrom != scheduleForm.value.time)">
+  <div class="schedules" *ngIf="!scheduleForm.value.showAllRooms && selectedBuildingSchedule && selectedBuildingSchedule.length > 0 && (selectedBuildingSchedule[0].freeFrom != scheduleForm.value.time)">
     <div>No rooms found for your specified time :(</div>
     <div><button type="button" md-button (click)="scheduleForm.controls.showAllRooms.setValue(true)">Show All Rooms</button></div>
   </div>
 </form>
 
-<ng-container *ngIf="!(!scheduleForm.value.showAllRooms && selectedBuildingSchedule && (selectedBuildingSchedule[0].freeFrom != scheduleForm.value.time))">
+<ng-container *ngIf="!(!scheduleForm.value.showAllRooms && selectedBuildingSchedule && selectedBuildingSchedule.length > 0 && (selectedBuildingSchedule[0].freeFrom != scheduleForm.value.time))">
   <table class="schedules" *ngIf="selectedBuildingSchedule">
     <thead>
       <tr>
@@ -71,4 +71,8 @@
       </tr>
     </tbody>
   </table>
+
+  <div class="schedules" style="text-align:center;" *ngIf="selectedBuildingSchedule && selectedBuildingSchedule.length === 0">
+    <div>No rooms listed for current building, please select another building.</div>
+  </div>
 </ng-container>
