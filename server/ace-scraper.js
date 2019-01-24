@@ -7,125 +7,139 @@ require('moment-round');
 var request = require('request-promise');
 var buildings = require('./buildings.js');
 
-
 if (!String.prototype.format) {
-  String.prototype.format = function() {
+  String.prototype.format = function () {
     var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
+    return this.replace(/{(\d+)}/g, function (match, number) {
       return typeof args[number] != 'undefined'
         ? args[number]
         : match
-      ;
+        ;
     });
   };
 }
 
-module.exports={
-	getBuildingCodes: function (){
-		const options = {  
-		  method: 'GET',
-		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:3:1742256958421901::::P3_BLDG,P3_ROOM:,",
-		  json: false,
-		  jar: true
-		};
+module.exports = {
+  getBuildingCodes: function () {
+    const options = {
+      method: 'GET',
+      uri: "https://www.ace.utoronto.ca/webapp/f?p=200:1:::::",
+      json: false,
+      jar: true
+    };
 
-		let buildingCodes = [];
+    let buildingCodes = [];
 
-		let promise = new Promise(function(resolve, reject){
-			request(options).then(function(response){
-				let $ = cheerio.load(response);
-				let buildingCodes = [];
+    let promise = new Promise(function (resolve, reject) {
+      request(options).then(function (response) {
+        let $ = cheerio.load(response);
+        let buildingCodes = [];
 
-				$("#P3_BLDG").children().each(function(i, elem){
-					let code = $(this).attr('value');
-					buildingCodes[i]={id: code, name: buildings.getBuilding(code).name};
-				});
+        $("#P1_BLDG").children().each(function (i, elem) {
+          let code = $(this).attr('value');
+          let name = $(this).text().split(" ").slice(1).join(" ").trim();
+          buildingCodes[i] = { id: code, name: name };
+        });
 
-				resolve(buildingCodes.slice(1)); //remove the first option, the null value
-			}).catch(function(err){
-				reject(err);
-			});
-		});
+        resolve(buildingCodes.slice(1)); //remove the first option, the null value
+      }).catch(function (err) {
+        reject(err);
+      });
+    });
 
-		return promise;
-	},
+    return promise;
+  },
 
-	getRooms: function (buildingCode){
-		const options = {  
-		  method: 'GET',
-		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:3:1742256958421901::::P3_BLDG,P3_ROOM:{0},".format(buildingCode),
-		  json: false,
-		  jar: true
-		};
+  getRooms: function (buildingCode) {
+    const options = {
+      method: 'GET',
+      uri: "https://www.ace.utoronto.ca/webapp/f?p=200:1:::::P1_BLDG:{0}"
+        .format(buildingCode),
+      json: false,
+      jar: true
+    };
 
-		let rooms = [];
+    let rooms = [];
 
-		let promise = new Promise(function(resolve, reject){
-			request(options).then(function(response){
-				let $ = cheerio.load(response);
-				let rooms = [];
+    let promise = new Promise(function (resolve, reject) {
+      request(options).then(function (response) {
+        let $ = cheerio.load(response);
+        let rooms = [];
 
-				$("#P3_ROOM").children().each(function(i, elem){
-					rooms[i]={id: $(this).attr('value'), name: $(this).text().trim()};
-				});
+        $("#P1_ROOM").children().each(function (i, elem) {
+          rooms[i] = { id: $(this).attr('value'), name: $(this).text().trim() };
+        });
 
-				resolve(rooms.slice(1)); //remove the first option, the null value
-			}).catch(function(err){
-				reject(err);
-			});
-		});
+        resolve(rooms.slice(1)); //remove the first option, the null value
+      }).catch(function (err) {
+        reject(err);
+      });
+    });
 
-		return promise;
-	},
+    return promise;
+  },
 
-	getWeekSchedule: function (buildingCode, roomNumber, dayOfWeek){
-		let startDate = dayOfWeek.clone().startOf('isoWeek'); //use the same day for every day in the week, for caching purposes
+  getWeekSchedule: function (buildingCode, roomNumber, dayOfWeek) {
+    let startDate = dayOfWeek.clone().startOf('isoWeek'); //use the same day for every day in the week, for caching purposes
 
-		const options = {  
-		  method: 'GET',
-		  uri: "http://www.ace.utoronto.ca/ws/f?p=200:5:::::P5_BLDG,P5_ROOM,P5_CALENDAR_DATE:{0},{1},{2}" 
-		  	.format(buildingCode, roomNumber, startDate.format("YYYYMMDD")), 
-		  json: false,
-		  jar: true
-		};
+    const options = {
+      method: 'GET',
+      uri: "https://www.ace.utoronto.ca/webapp/f?p=200:1:::::P1_BLDG,P1_ROOM,P1_CALENDAR_DATE:{0},{1},{2}"
+        .format(buildingCode, roomNumber, startDate.format("YYYYMMDD")),
+      json: false,
+      jar: true
+    };
 
-		let sched = [];
+    let sched = [];
 
-		let promise = new Promise(function(resolve, reject){
-			request(options).then(function(response){
-				let $ = cheerio.load(response);
+    let promise = new Promise(function (resolve, reject) {
+      request(options).then(function (body) {
 
-				let currentDateTime=startDate.hours(7); //schedule starts at 7 am every day
-				
-				//loop over every hour
-				$("table.t3SmallWeekCalendar>tbody>tr").each(function(i, elem){
-					if(i>1){ //skip first row
+        //needed to call calendar API
+        let ajaxIdentifier = body.match("apex.widget.cssCalendar(.*)}\\)")[1].match("ajaxIdentifier\":\"(.*)\"}")[1];
 
-						//loop over every day
-						$("td", this).each(function(i, elem){
+        const calendarApiOptions = {
+          method: 'POST',
+          uri: 'https://www.ace.utoronto.ca/webapp/wwv_flow.ajax',
+          jar: true,
+          form: {
+            p_flow_id: 200,
+            p_flow_step_id: 1,
+            p_instance: 0,
+            p_request: "PLUGIN={0}".format(ajaxIdentifier),
+            x01: "GET",
+            x02: startDate.format("YYYYMMDD"),
+            x03: startDate.add(7, 'days').format("YYYYMMDD")
+          }
+        };
 
-							if($(this).text().trim() != ""){
-								sched.push({buildingCode: buildingCode,
-									roomNumber: roomNumber,
-									time: currentDateTime.clone(),
-									name: $(this).text().trim(),
-								});
-							}
-							currentDateTime.add(1, "day");
+        request(calendarApiOptions).then(function (body) {
+          let responseSched = JSON.parse(body);
 
-						});
+          for (let i = 0; i < responseSched.length; i++) {
+            let currentTimeSpot = responseSched[i];
+            let currentTime = moment(currentTimeSpot.start);
+            let endTime = moment(currentTimeSpot.end).minute(0);
 
-						currentDateTime.add(1, "hour"); 
-						currentDateTime.subtract(7, "days"); 
-					}
-				});
+            while (!currentTime.isSame(endTime, 'hour')) {
+              sched.push({
+                buildingCode: buildingCode,
+                roomNumber: roomNumber,
+                time: currentTime.clone(),
+                name: currentTimeSpot.title
+              });
+              currentTime.add(1, 'hour');
+            }
+          }
 
-				resolve(sched);
-			}).catch(function(err){
-				reject(err);
-			});
-		});
+          resolve(sched);
 
-		return promise;
-	}
+        }).catch(function (err) {
+          reject(err);
+        });
+      });
+
+    });
+    return promise;
+  }
 };

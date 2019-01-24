@@ -7409,6 +7409,15 @@
         }
       }
     },
+    "request-debug": {
+      "version": "0.2.0",
+      "resolved": "https://registry.npmjs.org/request-debug/-/request-debug-0.2.0.tgz",
+      "integrity": "sha1-/AVOyBcYGwTKQaBSwTb2HEirr3g=",
+      "dev": true,
+      "requires": {
+        "stringify-clone": "^1.0.0"
+      }
+    },
     "request-promise": {
       "version": "4.2.1",
       "resolved": "https://registry.npmjs.org/request-promise/-/request-promise-4.2.1.tgz",
@@ -8394,6 +8403,12 @@
       "requires": {
         "safe-buffer": "~5.1.0"
       }
+    },
+    "stringify-clone": {
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/stringify-clone/-/stringify-clone-1.1.1.tgz",
+      "integrity": "sha1-MJojX7Ts/M19OI2+GLqQT6yvQzs=",
+      "dev": true
     },
     "stringstream": {
       "version": "0.0.5",

@@ -89,6 +89,7 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
-    "nodemon": "^1.18.6"
+    "nodemon": "^1.18.6",
+    "request-debug": "^0.2.0"
   }
 }
