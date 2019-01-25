@@ -5,7 +5,6 @@ var cheerio = require('cheerio');
 var moment = require('moment');
 require('moment-round');
 var request = require('request-promise');
-var buildings = require('./buildings.js');
 
 if (!String.prototype.format) {
   String.prototype.format = function () {
@@ -25,7 +24,7 @@ module.exports = {
       method: 'GET',
       uri: "https://www.ace.utoronto.ca/webapp/f?p=200:1:::::",
       json: false,
-      jar: true
+      jar: request.jar()
     };
 
     let buildingCodes = [];
@@ -56,7 +55,7 @@ module.exports = {
       uri: "https://www.ace.utoronto.ca/webapp/f?p=200:1:::::P1_BLDG:{0}"
         .format(buildingCode),
       json: false,
-      jar: true
+      jar: request.jar()
     };
 
     let rooms = [];
@@ -81,13 +80,14 @@ module.exports = {
 
   getWeekSchedule: function (buildingCode, roomNumber, dayOfWeek) {
     let startDate = dayOfWeek.clone().startOf('isoWeek'); //use the same day for every day in the week, for caching purposes
+    let myJar = request.jar() //cookie jar for this request
 
     const options = {
       method: 'GET',
       uri: "https://www.ace.utoronto.ca/webapp/f?p=200:1:::::P1_BLDG,P1_ROOM,P1_CALENDAR_DATE:{0},{1},{2}"
         .format(buildingCode, roomNumber, startDate.format("YYYYMMDD")),
       json: false,
-      jar: true
+      jar: myJar
     };
 
     let sched = [];
@@ -101,7 +101,7 @@ module.exports = {
         const calendarApiOptions = {
           method: 'POST',
           uri: 'https://www.ace.utoronto.ca/webapp/wwv_flow.ajax',
-          jar: true,
+          jar: myJar,
           form: {
             p_flow_id: 200,
             p_flow_step_id: 1,
