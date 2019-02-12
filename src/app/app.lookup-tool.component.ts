@@ -53,7 +53,7 @@ export class LookupToolComponent implements OnInit {
       const formModel = this.scheduleForm.value;
       this.loading.next(true);
       this.selectedBuildingSchedule = null;
-      this.angulartics2.eventTrack.next({ action: 'search', properties: { category: 'lookup-tool', label: formModel.building } });
+      this.angulartics2.eventTrack.next({ action: 'search', properties: { category: 'lookup-tool', label: formModel.selectedCampus + ":" + formModel.building } });
       this.aceService.getOptimizedRooms(formModel.building, moment().add(formModel.date, 'days').hours(formModel.time).format('YYYY-MM-DD::HH'), formModel.selectedCampus)
         .do(() => this.loading.next(false))
         .finally(() => this.loading.next(false))

@@ -75,9 +75,8 @@ module.exports = {
     return promise;
   },
 
-  getDaySchedule: function (buildingCode, roomNumber, day) {
+  getDaySchedule: function (buildingCode, day) {
     buildingCode = buildingCode.toUpperCase();
-    roomNumber = roomNumber.toUpperCase();
 
     let dayKey = day.clone().startOf('isoWeek').format("YYYYMMDD");
     let cacheKey = dayKey;
@@ -89,19 +88,19 @@ module.exports = {
       //cache hit
       if (sched !== undefined) {
 
-        //deserialize the time
-        for (let i = 0; i < sched.length; i++) {
-          sched[i].time = moment(sched[i].time);
-        }
-
         resolve(sched.filter(function (elem) {
-          return elem.time.isSame(day, 'day') && elem.buildingCode === buildingCode && elem.roomNumber === roomNumber;
+          return elem.buildingCode === buildingCode;
+        }).map(function (elem) {
+          elem.time = moment(elem.time);
+          return elem;
+        }).filter(function (elem) {
+          return elem.time.isSame(day, 'day');
         }));
 
         //cache miss, use scraper and cache the result
       } else {
         orbsScraper.getWeekSchedule(day).then(function (sched) {
-
+          console.log("cache miss");
           //serialize the time
           for (let i = 0; i < sched.length; i++) {
             sched[i].time = sched[i].time.valueOf();
@@ -110,13 +109,13 @@ module.exports = {
           //update the cache
           orbsCache.set(cacheKey, sched);
 
-          //deserialize the time
-          for (let i = 0; i < sched.length; i++) {
-            sched[i].time = moment(sched[i].time);
-          }
-
           resolve(sched.filter(function (elem) {
-            return elem.time.isSame(day, 'day') && elem.buildingCode === buildingCode && elem.roomNumber === roomNumber;
+            return elem.buildingCode === buildingCode;
+          }).map(function (elem) {
+            elem.time = moment(elem.time);
+            return elem;
+          }).filter(function (elem) {
+            return elem.time.isSame(day, 'day');
           }));
 
         }).catch(reject);
@@ -130,60 +129,62 @@ module.exports = {
     time = time.minutes(0);
 
     let promise = new Promise(function (resolve, reject) {
-      module.exports.getRooms(buildingCode).then(function (rooms) {
 
-        //populate free time length, and wait time length for each room at the current time
-        let augmentSchedPromises = [];
-        for (let i = 0; i < rooms.length; i++) {
-          augmentSchedPromises.push(
-            module.exports.getDaySchedule(buildingCode, rooms[i].id, time).then(function (sched) {
-              let hoursSched = sched.map(function (elem) {
-                return elem.time.get('hour');
-              });
+      //get the building's day schedule (contains every room)
+      Promise.all([module.exports.getDaySchedule(buildingCode, time), module.exports.getRooms(buildingCode)])
+        .then(function ([sched, rooms]) {
 
-              let currHour = time.get('hour');
-              let firstFreeHour = null, firstBusyHour = null;
+          let hoursSched = [];
 
-              //find first free hour
-              while (currHour < 24) {
-                if (!hoursSched.includes(currHour)) {
-                  firstFreeHour = currHour;
-                  break;
-                }
-                currHour++;
+          //augment the every room in the array with the free times
+          for (let i = 0; i < rooms.length; i++) {
+
+            hoursSched = sched.filter(function (elem) {
+              return elem.roomNumber === rooms[i].id;
+            }).map(function (elem) {
+              return elem.time.get('hour');
+            });
+
+            let currHour = time.get('hour');
+            let firstFreeHour = null, firstBusyHour = null;
+
+            //find first free hour
+            while (currHour < 24) {
+              if (!hoursSched.includes(currHour)) {
+                firstFreeHour = currHour;
+                break;
               }
-
               currHour++;
+            }
 
-              //find the first busy hour after the firstFreeHour
-              while (currHour < 24) {
-                if (hoursSched.includes(currHour)) {
-                  firstBusyHour = currHour;
-                  break;
-                }
-                currHour++;
+            currHour++;
+
+            //find the first busy hour after the firstFreeHour
+            while (currHour < 24) {
+              if (hoursSched.includes(currHour)) {
+                firstBusyHour = currHour;
+                break;
               }
+              currHour++;
+            }
 
-              if (firstFreeHour === null) {
-                rooms[i].freeFrom = Number.MAX_SAFE_INTEGER;
-                rooms[i].freeUntil = Number.MIN_SAFE_INTEGER;
-                rooms[i].waitTime = Number.MAX_SAFE_INTEGER;
-                rooms[i].freeTime = Number.MIN_SAFE_INTEGER;
+            if (firstFreeHour === null) {
+              rooms[i].freeFrom = Number.MAX_SAFE_INTEGER;
+              rooms[i].freeUntil = Number.MIN_SAFE_INTEGER;
+              rooms[i].waitTime = Number.MAX_SAFE_INTEGER;
+              rooms[i].freeTime = Number.MIN_SAFE_INTEGER;
+            } else {
+              rooms[i].freeFrom = firstFreeHour;
+              rooms[i].freeUntil = firstBusyHour || 0;
+              rooms[i].waitTime = firstFreeHour - time.get('hour');
+              if (firstBusyHour === null) {
+                rooms[i].freeTime = 24 - firstFreeHour;
               } else {
-                rooms[i].freeFrom = firstFreeHour;
-                rooms[i].freeUntil = firstBusyHour || 0;
-                rooms[i].waitTime = firstFreeHour - time.get('hour');
-                if (firstBusyHour === null) {
-                  rooms[i].freeTime = 24 - firstFreeHour;
-                } else {
-                  rooms[i].freeTime = firstBusyHour - firstFreeHour;
-                }
+                rooms[i].freeTime = firstBusyHour - firstFreeHour;
               }
-            }).catch(reject)
-          );
-        }
+            }
+          }
 
-        Promise.all(augmentSchedPromises).then(function () {
           rooms.sort(function (a, b) {
             if (a.waitTime < b.waitTime || a.waitTime === b.waitTime && a.freeTime > b.freeTime) {
               return -1;
@@ -193,12 +194,13 @@ module.exports = {
               return 0;
             }
           });
-          resolve(rooms);
-        });
 
-      }).catch(reject);
+          resolve(rooms);
+
+        }).catch(reject);
     });
 
     return promise;
+
   }
 };
