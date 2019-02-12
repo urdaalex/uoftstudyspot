@@ -1,15 +1,15 @@
-﻿:host {
+:host {
   display: inline-block;
-  width:100%;
+  width: 100%;
 }
 
-form{
-  width:100%;
-  text-align:center;
+form {
+  width: 100%;
+  text-align: center;
 }
 
-.schedules{
-  margin:20px auto;
+.schedules {
+  margin: 20px auto;
 }
 
 .info-text {
@@ -21,20 +21,38 @@ th {
   text-align: left;
 }
 
-md-spinner{
-  width:25px;
-  height:25px;
+md-spinner {
+  width: 25px;
+  height: 25px;
 }
 
-md-select{
-  margin-bottom:15px;
+md-select {
+  margin-bottom: 15px;
 }
 
-.spinner{
-  display:inline-block;
+.spinner {
+  display: inline-block;
   margin-top: 20px;
 }
 
 .building-container {
-  margin-bottom:15px;
+  margin-bottom: 15px;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+tr {
+  border: solid;
+  border-width: 1px 0;
+  border-color: #e4e4e4;
+}
+
+  tr:first-child {
+    border-top: none;
+  }
+
+  tr:last-child {
+    border-bottom: none;
+  }

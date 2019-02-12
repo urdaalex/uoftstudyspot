@@ -100,7 +100,6 @@ module.exports = {
         //cache miss, use scraper and cache the result
       } else {
         orbsScraper.getWeekSchedule(day).then(function (sched) {
-          console.log("cache miss");
           //serialize the time
           for (let i = 0; i < sched.length; i++) {
             sched[i].time = sched[i].time.valueOf();
