@@ -142,7 +142,14 @@ module.exports = {
         });
 
         //start the parser
-        request(csvLocation).pipe(parser);
+        request(csvLocation)
+          .on('error', function(e){
+            reject(e);
+          })
+          .pipe(parser)
+          .on('error', function(e){
+            reject(e);
+          });
       }).catch(function (err) {
         reject(err);
       });
