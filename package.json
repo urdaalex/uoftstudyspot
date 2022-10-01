@@ -1,6 +1,6 @@
 {
-  "name": "janus",
-  "version": "2.0.0",
+  "name": "uoftstudyspot",
+  "version": "3.0.0",
   "license": "MIT",
   "engines": {
     "node": "10.8.0"
