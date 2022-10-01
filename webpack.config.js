@@ -11,7 +11,6 @@ const { GlobCopyWebpackPlugin, BaseHrefWebpackPlugin } = require('@angular/cli/p
 const { CommonsChunkPlugin } = require('webpack').optimize;
 const { AotPlugin } = require('@ngtools/webpack');
 
-
 const nodeModules = path.join(process.cwd(), 'node_modules');
 const realNodeModules = fs.realpathSync(nodeModules);
 const genDirNodeModules = path.join(process.cwd(), 'src', '$$_gendir', 'node_modules');
@@ -54,9 +53,6 @@ const postcssPlugins = function () {
             autoprefixer(),
         ].concat(minimizeCss ? [cssnano(minimizeOptions)] : []);
     };
-
-
-
 
 module.exports = {
   "resolve": {
