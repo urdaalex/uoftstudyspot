@@ -46,7 +46,7 @@
     "core-js": "^2.4.1",
     "css-loader": "^0.28.1",
     "cssnano": "^3.10.0",
-    "csv-parse": "^3.2.0",
+    "csv-parse": "^4.4.6",
     "event-stream": "^4.0.1",
     "exports-loader": "^0.6.3",
     "express": "^4.15.4",
