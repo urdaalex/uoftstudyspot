@@ -1,5 +1,5 @@
 "use strict"
-
+//function not used
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
