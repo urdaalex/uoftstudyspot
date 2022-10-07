@@ -44,8 +44,6 @@ module.exports={
 			}else{
 				resolve(buildings);
 			}
-
-			
 		});
 
 		return promise;
